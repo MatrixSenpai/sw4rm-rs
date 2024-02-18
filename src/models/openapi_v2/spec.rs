@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 use serde_json::Value;
 
+use resolve_core::{ResolveRoot, Resolvable, ResolveError, RefType};
 use crate::models::{
     Scheme,
     shared::{
@@ -91,6 +92,12 @@ pub struct Spec {
     /// Extensions for further details.
     #[serde(flatten, skip_serializing_if = "HashMap::is_empty")]
     pub x_fields: HashMap<String, Value>,
+}
+
+impl ResolveRoot for Spec {
+    fn resolve<T: Resolvable>(&self, item_type: RefType, path: &str) -> Result<T, ResolveError> {
+        todo!()
+    }
 }
 
 #[cfg(test)]

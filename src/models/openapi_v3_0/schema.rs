@@ -25,7 +25,7 @@ pub struct Schema {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub multiple_of: Option<i64>,
+    pub multiple_of: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,21 +35,21 @@ pub struct Schema {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exclusive_minimum: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_length: Option<i64>,
+    pub max_length: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_length: Option<i64>,
+    pub min_length: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_items: Option<i64>,
+    pub max_items: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_items: Option<i64>,
+    pub min_items: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unique_items: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_properties: Option<i64>,
+    pub max_properties: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_properties: Option<i64>,
+    pub min_properties: Option<u64>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub required: Vec<String>,
     #[serde(rename = "enum", skip_serializing_if = "Vec::is_empty")]

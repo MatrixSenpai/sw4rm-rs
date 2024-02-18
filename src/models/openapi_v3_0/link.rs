@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::models::swagger_v3_0::server::Server;
+use crate::models::openapi_v3_0::server::Server;
 
 /// Link Object
 ///

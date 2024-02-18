@@ -1,6 +1,7 @@
 use darling::{Result, FromMeta, Error};
 use quote::{TokenStreamExt, ToTokens};
 use proc_macro2::{TokenStream, Ident, Span, Punct, Spacing, TokenTree};
+use crate::ResolveError;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -13,6 +14,26 @@ pub enum RefType {
     Response,
     Schema,
     SecurityScheme,
+}
+
+impl TryFrom<String> for RefType {
+    type Error = ResolveError;
+
+    fn try_from(value: String) -> std::result::Result<Self, Self::Error> {
+        match value.as_str() {
+            "example" => Ok(Self::Example),
+            "link" => Ok(Self::Link),
+            "parameter" => Ok(Self::Parameter),
+            "path_item" => Ok(Self::PathItem),
+            "request_body" => Ok(Self::RequestBody),
+            "response" => Ok(Self::Response),
+            "schema" => Ok(Self::Schema),
+            "security_scheme" => Ok(Self::SecurityScheme),
+
+            #[allow(unreachable_patterns)]
+            _ => Err(Self::Error::UnknownType)
+        }
+    }
 }
 
 impl FromMeta for RefType {

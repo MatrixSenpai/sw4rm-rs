@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-mod swagger_v2;
-mod swagger_v3_0;
-mod shared;
+pub mod openapi_v2;
+pub mod openapi_v3_0;
+pub mod shared;
 
 #[derive(Debug, Serialize, Deserialize, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 #[serde(rename_all = "lowercase")]

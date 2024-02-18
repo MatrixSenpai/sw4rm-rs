@@ -1,7 +1,7 @@
 use crate::{RefType, ResolveError};
 
 pub trait Resolvable {
-    fn resolve(root: &impl ResolveRoot, path: &str) -> Result<Self, ResolveError> where Self: Sized;
+    fn resolve(root: &impl ResolveRoot, path: &str) -> Result<Self, ResolveError> where Self: Sized + Clone;
 }
 
 pub trait ResolveRoot {

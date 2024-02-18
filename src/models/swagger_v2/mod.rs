@@ -1,9 +1,0 @@
-mod spec;
-mod path;
-mod schema;
-mod security;
-mod operation;
-mod parameter;
-mod items;
-mod response;
-mod headers;

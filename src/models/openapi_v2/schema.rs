@@ -43,43 +43,43 @@ pub struct Schema {
     pub default: Option<Value>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.1.1.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub multiple_of: Option<i64>,
+    pub multiple_of: Option<u64>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.1.2.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<f64>,
+    pub maximum: Option<i64>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.1.2.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exclusive_maximum: Option<bool>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.1.3.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<f64>,
+    pub minimum: Option<i64>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.1.3.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exclusive_minimum: Option<bool>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.2.1.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_length: Option<i64>,
+    pub max_length: Option<u64>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.2.2.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_length: Option<i64>,
+    pub min_length: Option<u64>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.2.3.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.3.2.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_items: Option<i64>,
+    pub max_items: Option<u64>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.3.3.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_items: Option<i64>,
+    pub min_items: Option<u64>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.3.4.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unique_items: Option<bool>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.3.4.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_properties: Option<i64>,
+    pub max_properties: Option<u64>,
     /// See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.4.1.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub min_properties: Option<i64>,
+    pub min_properties: Option<u64>,
     /// Determines whether this parameter is mandatory. If the parameter is in "path", this
     /// property is required and its value MUST be true. Otherwise, the property MAY be included
     /// and its default value is false.

@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use resolve_core::{Resolvable, ResolveError, ResolveRoot};
 
 use crate::models::shared::parameter_location::ParameterLocation;
 use super::{
@@ -11,8 +12,7 @@ use super::{
 /// Parameter Object
 ///
 ///
-#[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq, Resolvable)]
-#[resolve(reference_type = "parameter")]
+#[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Parameter {
     /// Required. The name of the parameter. Parameter names are case-sensitive.
@@ -121,6 +121,12 @@ pub struct Parameter {
     /// Extensions for further details.
     #[serde(flatten, skip_serializing_if = "HashMap::is_empty")]
     pub x_fields: HashMap<String, Value>,
+}
+
+impl Resolvable for Parameter {
+    fn resolve(root: &impl ResolveRoot, path: &str) -> Result<Self, ResolveError> where Self: Sized + Clone {
+        todo!()
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
