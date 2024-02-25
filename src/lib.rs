@@ -17,20 +17,6 @@ pub fn from_reader<R>(reader: R) -> Result<Spec, Error> where R: Read {
     Ok(serde_yaml::from_reader(reader)?)
 }
 
-// pub fn to_json<T>(spec: T) -> Result<String, Error>
-// where
-//     T: ResolveRoot + Serialize
-// {
-//     Ok(serde_json::to_string(&spec)?)
-// }
-//
-// pub fn to_yaml<T>(spec: T) -> Result<String, Error>
-// where
-//     T: ResolveRoot + Serialize
-// {
-//     Ok(serde_yaml::to_string(&spec)?)
-// }
-
 #[cfg(test)]
 mod tests {
     use crate::models::{

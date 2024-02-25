@@ -2,8 +2,9 @@
 name = "sw4rm-rs"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["MatrixSenpai <math.matrix@icloud.com>"]
+description = "A crate to handle OpenAPI v2, v3, and v3.1 specs"
+license-file = "LICENSE.md"
 
 [dependencies]
 serde = { version = "1.0.196", features = ["derive"] }
