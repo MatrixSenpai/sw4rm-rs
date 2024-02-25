@@ -1,7 +1,12 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::models::openapi_v3_0::server::Server;
+
+use crate::models::{
+    Spec,
+    reference::*,
+    openapi_v3_0::Server,
+};
 
 /// Link Object
 ///
@@ -15,8 +20,7 @@ use crate::models::openapi_v3_0::server::Server;
 /// For computing links, and providing instructions to execute them, a runtime expression is used
 /// for accessing values in an operation and using them as parameters while invoking the linked
 /// operation.
-#[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq, Resolvable)]
-#[resolve(reference_type = "link")]
+#[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Link {
     /// A relative or absolute URI reference to an OAS operation. This field is mutually exclusive
@@ -50,4 +54,22 @@ pub struct Link {
     /// Extensions for further details.
     #[serde(flatten, skip_serializing_if = "HashMap::is_empty")]
     pub x_fields: HashMap<String, Value>,
+}
+
+impl Resolvable for Link {
+    fn resolve(spec: &Spec, path: &String) -> Result<Self, ResolveError> {
+        let path = path.clone();
+        let reference: Reference = path.clone().try_into().unwrap();
+
+        match reference.kind {
+            ReferenceType::Link => {
+                spec.components
+                    .as_ref()
+                    .ok_or_else(|| ResolveError::UnknownPathError(path.clone()))
+                    .and_then(|c| c.links.get(&reference.name).ok_or_else(|| ResolveError::UnknownPathError(path)))
+                    .and_then(|p| p.resolve(spec))
+            },
+            _ => Err(ResolveError::UnknownPathError(path)),
+        }
+    }
 }

@@ -5,6 +5,8 @@ use serde_json::Value;
 /// Server Object
 ///
 /// An object representing a Server.
+///
+/// Available in v3 only.
 #[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Server {

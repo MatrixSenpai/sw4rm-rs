@@ -2,9 +2,13 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::models::{
+    Spec,
+    reference::*,
+};
+
 /// Example Object
-#[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq, Resolvable)]
-#[resolve(reference_type = "example")]
+#[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Example {
     /// Short description for the example.
@@ -29,4 +33,22 @@ pub struct Example {
     /// Extensions for further details.
     #[serde(flatten, skip_serializing_if = "HashMap::is_empty")]
     pub x_fields: HashMap<String, Value>,
+}
+
+impl Resolvable for Example {
+    fn resolve(spec: &Spec, path: &String) -> Result<Self, ResolveError> {
+        let path = path.clone();
+        let reference: Reference = path.clone().try_into().unwrap();
+
+        match reference.kind {
+            ReferenceType::Example => {
+                spec.components
+                    .as_ref()
+                    .ok_or_else(|| ResolveError::UnknownPathError(path.clone()))
+                    .and_then(|c| c.examples.get(&reference.name).ok_or_else(|| ResolveError::UnknownPathError(path)))
+                    .and_then(|p| p.resolve(spec))
+            },
+            _ => Err(ResolveError::UnknownPathError(path)),
+        }
+    }
 }

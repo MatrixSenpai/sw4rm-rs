@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use super::parameter::ParameterSchemaType;
+use crate::models::shared::ParameterSchemaType;
 
 /// Items Object
 ///

@@ -1,5 +1,25 @@
-pub mod info;
 pub mod external_documentation;
+pub mod info;
+pub mod operation;
+pub mod parameter;
 pub mod parameter_location;
+pub mod path_item;
+pub mod response;
+pub mod schema;
+pub mod security_scheme;
+pub mod string_or;
 pub mod tag;
 pub mod xml;
+
+pub use external_documentation::*;
+pub use info::*;
+pub use operation::*;
+pub use parameter::*;
+pub use parameter_location::*;
+pub use path_item::*;
+pub use response::*;
+pub use schema::*;
+pub use security_scheme::*;
+pub use string_or::*;
+pub use tag::*;
+pub use xml::*;

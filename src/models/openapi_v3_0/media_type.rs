@@ -2,11 +2,13 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use resolve_core::RefOr;
-use super::{
-    example::Example,
-    encoding::Encoding,
-    schema::Schema,
+use crate::models::{
+    RefOr,
+    shared::schema::Schema,
+    openapi_v3_0::{
+        example::Example,
+        encoding::Encoding,
+    },
 };
 
 /// Media Type Object

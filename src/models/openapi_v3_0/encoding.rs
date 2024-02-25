@@ -2,8 +2,10 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use resolve_core::RefOr;
-use super::parameter::Parameter;
+use crate::models::{
+    RefOr,
+    shared::Parameter,
+};
 
 #[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq)]
 #[serde(default, rename_all = "camelCase")]

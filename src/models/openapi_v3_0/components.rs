@@ -2,16 +2,20 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use resolve_core::RefOr;
-use super::{
-    example::Example,
-    link::Link,
-    parameter::Parameter,
-    path::PathItem,
-    request_body::RequestBody,
-    response::Response,
-    schema::Schema,
-    security::SecurityScheme,
+use crate::models::{
+    RefOr,
+    shared::{
+        Callback,
+        Parameter,
+        Response,
+        Schema,
+        SecurityScheme,
+    },
+    openapi_v3_0::{
+        Example,
+        Link,
+        RequestBody,
+    }
 };
 
 /// Components Object
@@ -48,7 +52,7 @@ pub struct Components {
     pub links: HashMap<String, RefOr<Link>>,
     /// An object to hold reusable Callback Objects.
     #[serde(skip_serializing_if = "HashMap::is_empty")]
-    pub callbacks: HashMap<String, RefOr<HashMap<String, PathItem>>>,
+    pub callbacks: HashMap<String, RefOr<Callback>>,
 
     /// Allows extensions to the Swagger Schema. The field name MUST begin with x-, for example,
     /// x-internal-id. The value can be null, a primitive, an array or an object. See Vendor
