@@ -468,13 +468,23 @@ fn get_type(
 #[cfg(test)]
 mod tests {
     #[test]
-    fn test_parsing() {
+    fn test_parsing_yaml_v2() {
+        let spec = crate::from_path("./resources/swagger_2_0.yaml").unwrap();
+        _ = super::parse_spec(spec).unwrap();
+    }
+    #[test]
+    fn test_parsing_json_v2() {
+        let spec = crate::from_path("./resources/riot-swaggerspec-2.0.json").unwrap();
+        _ = super::parse_spec(spec).unwrap();
+    }
+    #[test]
+    fn test_parsing_yaml_v3() {
+        let spec = crate::from_path("./resources/openapi_3_0.yaml").unwrap();
+        _ = super::parse_spec(spec).unwrap();
+    }
+    #[test]
+    fn test_parsing_json_v3() {
         let spec = crate::from_path("./resources/riot-openapi-3.0.0.json").unwrap();
-        let files = super::parse_spec(spec).unwrap();
-
-        for (_, file) in files {
-            let file_str = prettyplease::unparse(&file);
-            println!("{file_str}")
-        }
+        _ = super::parse_spec(spec).unwrap();
     }
 }

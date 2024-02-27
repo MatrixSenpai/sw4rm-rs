@@ -24,7 +24,7 @@ impl<T> RefOr<T> where T: Resolvable {
     pub fn resolve(&self, spec: &Spec) -> Result<T, ResolveError> {
         match self {
             Self::Item(item) => Ok(item.clone()),
-            Self::Reference { reference_path } => T::resolve(spec, reference_path)
+            Self::Reference { reference_path } => T::resolve(spec, reference_path),
         }
     }
 }

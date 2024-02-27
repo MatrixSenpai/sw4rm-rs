@@ -131,6 +131,7 @@ impl Resolvable for Schema {
 pub enum SchemaType {
     Array,
     Boolean,
+    File,
     Integer,
     Number,
     Object,
