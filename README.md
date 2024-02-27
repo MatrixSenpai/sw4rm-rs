@@ -16,6 +16,10 @@ in one simple model, and a way to generate models through a cargo command or in 
 ### Roadmap
 - [x] Cross-Spec support for v2 and v3
 - [ ] Parse and create Rust models using `syn`
+  - [x] Unoptimized parsing
+  - [ ] Create mod file
+  - [ ] Write files
+  - [ ] Types imports
 - [ ] Parse and create Rust apis using `syn`
   - [ ] Allow the user to specify what framework to utilize underneath
   - [ ] Allow the user to specify other options, including additional traits to derive on models
