@@ -14,11 +14,11 @@ pub trait Resolvable: Clone + Sized {
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 #[serde(untagged)]
 pub enum RefOr<T> where T: Resolvable {
-    Item(T),
     Reference {
         #[serde(rename = "$ref")]
         reference_path: String,
-    }
+    },
+    Item(T),
 }
 impl<T> RefOr<T> where T: Resolvable {
     pub fn resolve(&self, spec: &Spec) -> Result<T, ResolveError> {

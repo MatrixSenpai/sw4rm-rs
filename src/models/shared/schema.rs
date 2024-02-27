@@ -60,7 +60,7 @@ pub struct Schema {
     #[serde(rename = "enum", skip_serializing_if = "Vec::is_empty")]
     pub enum_values: Vec<Value>,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub schema_type: Option<String>,
+    pub schema_type: Option<SchemaType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<RefOr<Box<Self>>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -124,4 +124,18 @@ impl Resolvable for Schema {
             _ => Err(ResolveError::UnknownPathError(path)),
         }
     }
+}
+
+#[derive(Debug, Serialize, Deserialize, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub enum SchemaType {
+    Array,
+    Boolean,
+    Integer,
+    Number,
+    Object,
+    String,
+}
+impl Default for SchemaType {
+    fn default() -> Self { Self::Object }
 }
