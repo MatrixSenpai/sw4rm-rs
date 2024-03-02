@@ -1,5 +1,6 @@
 pub mod models;
 pub mod error;
+pub mod generation;
 
 use std::{
     fs::File, io::Read, path::Path,
