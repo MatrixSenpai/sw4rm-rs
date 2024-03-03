@@ -1,0 +1,15 @@
+[package]
+name = "sw4rm-rs"
+version = "0.2.0"
+edition = "2021"
+authors = ["MatrixSenpai <math.matrix@icloud.com>"]
+description = "A crate to handle OpenAPI v2, v3, and v3.1 specs"
+license-file = "LICENSE.md"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+lazy_static = "1"
+regex = "1"
+semver = { version = "1", features = ["serde"] }

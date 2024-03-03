@@ -2,10 +2,15 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::models::{reference::*, shared::{
-    Operation,
-    Parameter,
-}, openapi_v3_0::Server, Spec};
+use crate::{
+    Spec,
+    reference::*,
+    shared::{
+        Operation,
+        Parameter,
+    },
+    openapi_v3_0::Server,
+};
 
 /// Path Item Object
 ///

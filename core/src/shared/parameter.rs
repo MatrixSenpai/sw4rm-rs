@@ -2,13 +2,19 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::models::{reference::*, shared::{
-    ParameterLocation,
-    Schema,
-}, openapi_v2::Items, openapi_v3_0::{
-    Example,
-    MediaType,
-}, Spec};
+use crate::{
+    Spec,
+    reference::*,
+    shared::{
+        ParameterLocation,
+        Schema,
+    },
+    openapi_v2::Items,
+    openapi_v3_0::{
+        Example,
+        MediaType,
+    },
+};
 
 /// Parameter Object
 ///

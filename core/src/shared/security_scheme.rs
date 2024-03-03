@@ -2,7 +2,11 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::models::{reference::*, openapi_v3_0::OAuthFlows, Spec};
+use crate::{
+    Spec,
+    reference::*,
+    openapi_v3_0::OAuthFlows,
+};
 
 /// Security Scheme Object
 ///

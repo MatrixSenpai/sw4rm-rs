@@ -2,16 +2,22 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::models::{reference::*, shared::{
-    ExternalDocumentation,
-    PathItem,
-    Parameter,
-    Response,
-    StringOrHttpCode,
-}, openapi_v2::Scheme, openapi_v3_0::{
-    RequestBody,
-    Server,
-}, Spec};
+use crate::{
+    Spec,
+    reference::*,
+    shared::{
+        ExternalDocumentation,
+        PathItem,
+        Parameter,
+        Response,
+        StringOrHttpCode,
+    },
+    openapi_v2::Scheme,
+    openapi_v3_0::{
+        RequestBody,
+        Server,
+    },
+};
 
 /// Operation Object
 ///

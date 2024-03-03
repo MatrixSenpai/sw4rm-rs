@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use lazy_static::lazy_static;
 use regex::Regex;
-use crate::models::spec::Spec;
+use crate::Spec;
 
 lazy_static! {
     static ref PATH_EXPRESSION: Regex = Regex::new(r"^(?<source>[^#]*)#\/(?<location>[^/]+)\/(?<kind>[^/]+)\/*(?<name>\S*)$").unwrap();
@@ -14,17 +14,17 @@ pub trait Resolvable: Clone + Sized {
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 #[serde(untagged)]
 pub enum RefOr<T> where T: Resolvable {
-    Item(T),
     Reference {
         #[serde(rename = "$ref")]
         reference_path: String,
-    }
+    },
+    Item(T),
 }
 impl<T> RefOr<T> where T: Resolvable {
     pub fn resolve(&self, spec: &Spec) -> Result<T, ResolveError> {
         match self {
             Self::Item(item) => Ok(item.clone()),
-            Self::Reference { reference_path } => T::resolve(spec, reference_path)
+            Self::Reference { reference_path } => T::resolve(spec, reference_path),
         }
     }
 }

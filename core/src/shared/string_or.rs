@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
-use crate::models::openapi_v3_0::Discriminator;
+
+use crate::openapi_v3_0::Discriminator;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
 #[serde(untagged)]

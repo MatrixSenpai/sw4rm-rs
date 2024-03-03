@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::models::{
+use crate::{
     Spec,
     reference::*,
     openapi_v3_0::media_type::MediaType,

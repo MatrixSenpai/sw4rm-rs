@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use semver::{Version, VersionReq};
 
-use super::{
+use crate::{
     RefOr,
     shared::{
         ExternalDocumentation,
@@ -83,5 +83,13 @@ impl Spec {
         let spec_version = Version::parse(self.spec_version.replace("2.0", "2.0.0").as_str()).unwrap();
         let version = VersionReq::parse(version).unwrap();
         version.matches(&spec_version)
+    }
+
+    pub fn schemas(&self) -> HashMap<String, RefOr<Schema>> {
+        self.components
+            .as_ref()
+            .map(|c| c.schemas.clone())
+            .unwrap_or(self.definitions.clone())
+            .clone()
     }
 }
