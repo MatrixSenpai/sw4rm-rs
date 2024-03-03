@@ -1,6 +1,6 @@
 [package]
 name = "sw4rm-rs-generation"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["MatrixSenpai <math.matrix@icloud.com>"]
 description = "A crate to handle generation of rust models & apis from OpenAPI v2, v3, and v3.1 specs"
