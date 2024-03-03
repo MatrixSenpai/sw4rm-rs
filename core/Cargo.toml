@@ -4,7 +4,7 @@ version = "0.2.0"
 edition = "2021"
 authors = ["MatrixSenpai <math.matrix@icloud.com>"]
 description = "A crate to handle OpenAPI v2, v3, and v3.1 specs"
-license-file = "LICENSE.md"
+license-file = "../LICENSE.md"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

@@ -4,7 +4,7 @@ version = "0.2.0"
 edition = "2021"
 authors = ["MatrixSenpai <math.matrix@icloud.com>"]
 description = "A binary to handle generation of rust models & apis from OpenAPI v2, v3, and v3.1 specs working through cargo or on command line"
-license-file = "LICENSE.md"
+license-file = "../LICENSE.md"
 
 [dependencies]
 sw4rm-rs = { path = "../core", version = "0.2.0" }
