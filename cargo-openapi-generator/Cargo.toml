@@ -1,0 +1,13 @@
+[package]
+name = "sw4rm-rs-cargo-generation"
+version = "0.1.0"
+edition = "2021"
+authors = ["MatrixSenpai <math.matrix@icloud.com>"]
+description = "A binary to handle generation of rust models & apis from OpenAPI v2, v3, and v3.1 specs working through cargo or on command line"
+license-file = "LICENSE.md"
+
+[dependencies]
+sw4rm-rs = { path = "../core" }
+sw4rm-rs-generation = { path = "../generator" }
+log = "0.4"
+pretty_env_logger = "0.5"
