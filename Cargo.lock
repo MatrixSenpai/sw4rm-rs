@@ -244,19 +244,36 @@ dependencies = [
 name = "sw4rm-rs"
 version = "0.1.0"
 dependencies = [
- "convert_case",
  "lazy_static",
+ "regex",
+ "semver",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+]
+
+[[package]]
+name = "sw4rm-rs-cargo-generation"
+version = "0.1.0"
+dependencies = [
  "log",
  "pretty_env_logger",
+ "sw4rm-rs",
+ "sw4rm-rs-generation",
+]
+
+[[package]]
+name = "sw4rm-rs-generation"
+version = "0.1.0"
+dependencies = [
+ "convert_case",
+ "lazy_static",
  "prettyplease",
  "proc-macro2",
  "quote",
  "regex",
  "rust-numerals",
- "semver",
- "serde",
- "serde_json",
- "serde_yaml",
+ "sw4rm-rs",
  "syn",
 ]
 

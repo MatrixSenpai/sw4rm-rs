@@ -1,0 +1,18 @@
+[package]
+name = "sw4rm-rs-generation"
+version = "0.1.0"
+edition = "2021"
+authors = ["MatrixSenpai <math.matrix@icloud.com>"]
+description = "A crate to handle generation of rust models & apis from OpenAPI v2, v3, and v3.1 specs"
+license-file = "LICENSE.md"
+
+[dependencies]
+sw4rm-rs = { path = "../core" }
+syn = { version = "2", features = ["full"] }
+proc-macro2 = "1"
+quote = "1"
+prettyplease = "0.2"
+rust-numerals = "0.1"
+convert_case = "0.6"
+lazy_static = "1"
+regex = "1"

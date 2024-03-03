@@ -1,23 +1,20 @@
-[package]
-name = "sw4rm-rs"
-version = "0.1.0"
-edition = "2021"
-authors = ["MatrixSenpai <math.matrix@icloud.com>"]
-description = "A crate to handle OpenAPI v2, v3, and v3.1 specs"
-license-file = "LICENSE.md"
+[workspace]
+resolver = "2"
+members = [
+    "core",
+    "generator",
+    "cargo-openapi-generator",
+]
 
-[dependencies]
-serde = { version = "1.0.196", features = ["derive"] }
-serde_json = "1.0.113"
-serde_yaml = "0.9.31"
-lazy_static = "1.4.0"
-regex = "1.10.3"
-semver = { version = "1.0.22", features = ["serde"] }
-syn = { version = "2.0.50", features = ["full"] }
-proc-macro2 = "1.0.78"
-quote = "1.0.35"
-prettyplease = "0.2.16"
-rust-numerals = "0.1.0"
-convert_case = "0.6.0"
-log = "0.4.21"
-pretty_env_logger = "0.5.0"
+[workspace.package]
+authors = ["MatrixSenpai <math.matrix@icloud.com>"]
+homepage = "https://github.com/MatrixSenpai/sw4rm-rs"
+repository = "https://github.com/MatrixSenpai/sw4rm-rs"
+categories = ["api-bindings", "compilers", "development-tools::build-utils", "parser-implementations", "template-engine"]
+license-file = "LICENSE.md"
+edition = "2021"
+rust-version = "1.70"
+
+[profile.release]
+panic = "abort"
+opt-level = "s"

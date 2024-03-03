@@ -8,6 +8,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/resolve/core/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/resolve/macro/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/resolve/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cargo-openapi-generator/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/generator/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/resolve-core/target" />
       <excludeFolder url="file://$MODULE_DIR$/src/resolve/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
