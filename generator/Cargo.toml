@@ -7,7 +7,7 @@ description = "A crate to handle generation of rust models & apis from OpenAPI v
 license-file = "LICENSE.md"
 
 [dependencies]
-sw4rm-rs = { path = "../core" }
+sw4rm-rs = { path = "../core", version = "0.2.0" }
 syn = { version = "2", features = ["full"] }
 proc-macro2 = "1"
 quote = "1"

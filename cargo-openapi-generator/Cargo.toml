@@ -7,8 +7,8 @@ description = "A binary to handle generation of rust models & apis from OpenAPI 
 license-file = "LICENSE.md"
 
 [dependencies]
-sw4rm-rs = { path = "../core" }
-sw4rm-rs-generation = { path = "../generator" }
+sw4rm-rs = { path = "../core", version = "0.2.0" }
+sw4rm-rs-generation = { path = "../generator", version = "0.2.0" }
 log = "0.4"
 pretty_env_logger = "0.5"
 clap = { version = "4.5.1", features = ["derive"] }
