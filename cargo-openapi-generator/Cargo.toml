@@ -1,5 +1,5 @@
 [package]
-name = "sw4rm-rs-cargo-generation"
+name = "cargo-openapi"
 version = "0.2.0"
 edition = "2021"
 authors = ["MatrixSenpai <math.matrix@icloud.com>"]

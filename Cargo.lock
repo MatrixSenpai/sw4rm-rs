@@ -60,6 +60,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "cargo-openapi"
+version = "0.2.0"
+dependencies = [
+ "clap",
+ "log",
+ "pretty_env_logger",
+ "sw4rm-rs",
+ "sw4rm-rs-generation",
+]
+
+[[package]]
 name = "clap"
 version = "4.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -356,17 +367,6 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml",
-]
-
-[[package]]
-name = "sw4rm-rs-cargo-generation"
-version = "0.2.0"
-dependencies = [
- "clap",
- "log",
- "pretty_env_logger",
- "sw4rm-rs",
- "sw4rm-rs-generation",
 ]
 
 [[package]]
