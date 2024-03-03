@@ -17,11 +17,17 @@ in one simple model, and a way to generate models through a cargo command or in 
 - [x] Cross-Spec support for v2 and v3
 - [ ] Parse and create Rust models using `syn`
   - [x] Unoptimized parsing
-  - [ ] Create mod file
-  - [ ] Write files
-  - [ ] Types imports
+  - [x] Create mod file
+  - [x] Write files
+  - [x] Types imports
+  - [ ] Optimize typing and imports
+  - [ ] Parse enums
 - [ ] Parse and create Rust apis using `syn`
   - [ ] Allow the user to specify what framework to utilize underneath
   - [ ] Allow the user to specify other options, including additional traits to derive on models
   - [ ] Allow the user to provide a base struct to extend rather than generating one internally
 - [ ] More complete documentation and readme with examples for crates.io
+- [ ] Tests
+  - [x] Simple tests 
+  - [ ] Test runner
+  - [ ] More and more complete tests
