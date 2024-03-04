@@ -22,8 +22,12 @@ jobs:
         run: cargo check
       - name: Run tests
         run: cargo test --verbose --all --all-features
-      - name: Lint publish
-        run: cargo publish --dry-run --color always --all-features --frozen --locked
+      - name: Lint publish Cargo Generator
+        run: cargo publish --dry-run --color always --all-features --frozen --locked --package cargo-openapi
+      - name: Lint publish Core
+        run: cargo publish --dry-run --color always --all-features --frozen --locked --package sw4rm-rs
+      - name: Lint publish Generator
+        run: cargo publish --dry-run --color always --all-features --frozen --locked --package sw4rm-rs-generation
 
   bump:
     runs-on: ubuntu-latest
@@ -33,13 +37,13 @@ jobs:
 
       - name: Bump Cargo Runner Version
         run: cargo bump minor
-        working-directory: ./cargo-openapi-generator
+        working-directory: cargo-openapi-generator
       - name: Bump Cargo Core Version
         run: cargo bump minor
-        working-directory: ./core
+        working-directory: core
       - name: Bump Generator Version
         run: cargo bump minor
-        working-directory: ./generator
+        working-directory: generator
 
       - name: Push new version
         run: git push
