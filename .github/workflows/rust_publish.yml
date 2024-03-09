@@ -1,8 +1,9 @@
 name: Rust Publish
 
 on:
-  push:
-    branches: [ "master" ]
+  workflow_dispatch:
+  release:
+   types: [ published ]
 
 env:
   CRATES_TOKEN: ${{ secrets.CRATES_SECRET }}
@@ -20,16 +21,6 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-
-      - name: Fetch version
-        id: ver
-        uses: dante-signal32/rust-app-version@v1.2.0
-        with:
-          cargo_toml_folder: core/
-      - name: Create Release Tag
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: ${{ steps.ver.outputs.app_version }}
 
       - name: Publish Cargo Runner
         run: cargo publish --package cargo-openapi --token ${CRATES_TOKEN}
