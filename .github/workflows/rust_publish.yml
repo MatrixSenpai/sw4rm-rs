@@ -1,0 +1,30 @@
+name: Rust Publish
+
+on:
+  workflow_dispatch:
+  release:
+   types: [ published ]
+
+env:
+  CRATES_TOKEN: ${{ secrets.CRATES_SECRET }}
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Publish Cargo Runner
+        run: cargo publish --package cargo-openapi --token ${CRATES_TOKEN}
+      - name: Publish Cargo Core
+        run: cargo publish --package sw4rm-rs --token ${CRATES_TOKEN}
+      - name: Publish Cargo Runner
+        run: cargo publish --package sw4rm-rs-generation --token ${CRATES_TOKEN}

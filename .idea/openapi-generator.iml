@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/cargo-openapi-generator/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/generator/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/resolve-core/target" />
       <excludeFolder url="file://$MODULE_DIR$/src/resolve/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />

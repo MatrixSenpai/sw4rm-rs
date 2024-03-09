@@ -126,27 +126,3 @@ pub fn read_parse_write_multi_spec<T: AsRef<Path>>(path: T) -> Result<(), Genera
 
     Ok(())
 }
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test_parsing_yaml_v2() {
-        let spec = sw4rm_rs::from_path("./resources/swagger_2_0.yaml").unwrap();
-        _ = super::parse_spec(spec).unwrap();
-    }
-    #[test]
-    fn test_parsing_json_v2() {
-        let spec = sw4rm_rs::from_path("./resources/riot-swaggerspec-2.0.json").unwrap();
-        _ = super::parse_spec(spec).unwrap();
-    }
-    #[test]
-    fn test_parsing_yaml_v3() {
-        let spec = sw4rm_rs::from_path("./resources/openapi_3_0.yaml").unwrap();
-        _ = super::parse_spec(spec).unwrap();
-    }
-    #[test]
-    fn test_parsing_json_v3() {
-        let spec = sw4rm_rs::from_path("./resources/riot-openapi-3.0.0.json").unwrap();
-        _ = super::parse_spec(spec).unwrap();
-    }
-}

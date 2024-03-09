@@ -1,0 +1,58 @@
+name: Rust PR Checks
+
+on:
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Build
+        run: cargo build --verbose
+      - name: Check
+        run: cargo check
+      - name: Run tests
+        run: cargo test --verbose --all --all-features
+      - name: Lint publish Cargo Generator
+        run: cargo publish --dry-run --color always --all-features --locked --package cargo-openapi
+      - name: Lint publish Core
+        run: cargo publish --dry-run --color always --all-features --locked --package sw4rm-rs
+      - name: Lint publish Generator
+        run: cargo publish --dry-run --color always --all-features --locked --package sw4rm-rs-generation
+
+  # Need to figure this part out. bumping isn't currently working
+  # bump:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Install stable toolchain
+  #       uses: actions-rs/toolchain@v1
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
+  #         override: true
+  #     - name: Install cargo-bump
+  #       run: cargo install cargo-bump
+  #
+  #     - name: Bump Cargo Runner Version
+  #       run: cargo bump minor
+  #       working-directory: cargo-openapi-generator
+  #     - name: Bump Cargo Core Version
+  #       run: cargo bump minor
+  #       working-directory: core
+  #     - name: Bump Generator Version
+  #       run: cargo bump minor
+  #       working-directory: generator
+  #
+  #     - name: Push new version
+  #       run: git push
