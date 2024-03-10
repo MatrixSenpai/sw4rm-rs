@@ -72,7 +72,7 @@ pub struct Schema {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub properties: HashMap<String, RefOr<Box<Self>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_properties: Option<RefOr<Box<Self>>>,
+    pub additional_properties: Option<AdditionalSchemaProperties>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discriminator: Option<StringOrDiscriminator>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -149,4 +149,11 @@ impl Default for SchemaType {
 pub enum SchemaTypeContainer {
     SingleType(SchemaType),
     MultiType(Vec<SchemaType>),
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[serde(untagged)]
+pub enum AdditionalSchemaProperties {
+    Reference(RefOr<Box<Schema>>),
+    Other(Value),
 }

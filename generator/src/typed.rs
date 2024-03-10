@@ -131,8 +131,14 @@ pub fn recursive_field_type(
         );
     }
 
+    let additional = &schema.additional_properties.clone().map(|a| {
+        match a {
+            sw4rm_rs::shared::AdditionalSchemaProperties::Reference(r) => r,
+            _ => unreachable!(),
+        }
+    });
     let ident_type = get_type(
-        spec, field_title, field_type, &schema.items, &schema.additional_properties
+        spec, field_title, field_type, &schema.items, additional
     )?;
 
     let mut final_segment: Vec<PathSegment> = Vec::new();
@@ -173,7 +179,13 @@ fn get_type(
                 sw4rm_rs::shared::SchemaTypeContainer::MultiType(v) => *v.first().unwrap(),
             }
         });
-        return get_type(spec, items.title, kind, &items.items, &items.additional_properties);
+        let additional = &items.additional_properties.map(|a| {
+            match a {
+                sw4rm_rs::shared::AdditionalSchemaProperties::Reference(r) => r,
+                _ => unreachable!(),
+            }
+        });
+        return get_type(spec, items.title, kind, &items.items, additional);
     }
 
     if let Some(additional_items) = additional_properties {
@@ -184,7 +196,13 @@ fn get_type(
                 sw4rm_rs::shared::SchemaTypeContainer::MultiType(v) => *v.first().unwrap(),
             }
         });
-        return get_type(spec, items.title, kind, &items.items, &items.additional_properties);
+        let additional = &items.additional_properties.map(|a| {
+            match a {
+                sw4rm_rs::shared::AdditionalSchemaProperties::Reference(r) => r,
+                _ => unreachable!(),
+            }
+        });
+        return get_type(spec, items.title, kind, &items.items, additional);
     }
 
     unreachable!()
