@@ -137,6 +137,7 @@ pub enum SchemaType {
     Boolean,
     File,
     Integer,
+    Null,
     Number,
     Object,
     String,
