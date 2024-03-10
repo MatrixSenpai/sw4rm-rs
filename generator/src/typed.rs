@@ -82,7 +82,7 @@ pub fn recursive_field_type(
     }
 
     // TODO: this whole block needs to be optimized
-    if schema.schema_type.eq(&Some(SchemaType::Object)) && (
+    if schema.schema_type.eq(&Some(sw4rm_rs::shared::SchemaTypeContainer::SingleType(SchemaType::Object))) && (
         schema.title.is_none() || schema.clone().title.is_some_and(|t| t.is_empty())
     ) {
         let mut string_arguments: Vec<PathSegment> = Vec::new();
@@ -167,12 +167,24 @@ fn get_type(
 
     if let Some(items) = properties {
         let items = items.resolve(spec)?;
-        return get_type(spec, items.title, items.schema_type, &items.items, &items.additional_properties);
+        let kind = items.schema_type.map(|s| {
+            match s {
+                sw4rm_rs::shared::SchemaTypeContainer::SingleType(v) => v,
+                sw4rm_rs::shared::SchemaTypeContainer::MultiType(v) => *v.first().unwrap(),
+            }
+        });
+        return get_type(spec, items.title, kind, &items.items, &items.additional_properties);
     }
 
     if let Some(additional_items) = additional_properties {
         let items = additional_items.resolve(spec)?;
-        return get_type(spec, items.title, items.schema_type, &items.items, &items.additional_properties);
+        let kind = items.schema_type.map(|s| {
+            match s {
+                sw4rm_rs::shared::SchemaTypeContainer::SingleType(v) => v,
+                sw4rm_rs::shared::SchemaTypeContainer::MultiType(v) => *v.first().unwrap(),
+            }
+        });
+        return get_type(spec, items.title, kind, &items.items, &items.additional_properties);
     }
 
     unreachable!()

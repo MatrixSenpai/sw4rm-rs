@@ -64,7 +64,7 @@ pub struct Schema {
     #[serde(rename = "enum", skip_serializing_if = "Vec::is_empty")]
     pub enum_values: Vec<Value>,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub schema_type: Option<SchemaType>,
+    pub schema_type: Option<SchemaTypeContainer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<RefOr<Box<Self>>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -143,4 +143,10 @@ pub enum SchemaType {
 }
 impl Default for SchemaType {
     fn default() -> Self { Self::Object }
+}
+#[derive(Debug, Serialize, Deserialize, Clone, Ord, PartialOrd, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum SchemaTypeContainer {
+    SingleType(SchemaType),
+    MultiType(Vec<SchemaType>),
 }

@@ -48,9 +48,14 @@ fn parse_struct_field(
         spec,
         schema_ref,
         !required_fields.contains(&property_name),
-        schema.schema_type.eq(&Some(SchemaType::Array)),
+        schema.schema_type.eq(&Some(sw4rm_rs::shared::SchemaTypeContainer::SingleType(SchemaType::Array))),
         schema.title,
-        schema.schema_type
+        schema.schema_type.map(|s| {
+            match s {
+                sw4rm_rs::shared::SchemaTypeContainer::SingleType(v) => v,
+                sw4rm_rs::shared::SchemaTypeContainer::MultiType(v) => v.first().unwrap().clone(),
+            }
+        })
     )?;
     let path = TypePath {
         qself: None,
