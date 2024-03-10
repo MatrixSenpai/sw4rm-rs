@@ -8,6 +8,7 @@ mod attribute;
 mod field;
 mod ident;
 mod typed;
+mod parsing;
 
 use std::{
     collections::HashMap,
@@ -25,6 +26,10 @@ use error::GenerationError;
 pub enum ContainerItem {
     File(String, File),
     FileList(String, HashMap<String, File>),
+}
+
+pub struct GenerationOptions {
+
 }
 
 /// Takes a OpenAPI specification as input, and parses it out to a hashmap of files and file names
