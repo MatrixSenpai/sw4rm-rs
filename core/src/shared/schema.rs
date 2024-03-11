@@ -64,7 +64,7 @@ pub struct Schema {
     #[serde(rename = "enum", skip_serializing_if = "Vec::is_empty")]
     pub enum_values: Vec<Value>,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub schema_type: Option<SchemaType>,
+    pub schema_type: Option<SchemaTypeContainer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<RefOr<Box<Self>>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -72,7 +72,7 @@ pub struct Schema {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub properties: HashMap<String, RefOr<Box<Self>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_properties: Option<RefOr<Box<Self>>>,
+    pub additional_properties: Option<AdditionalSchemaProperties>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discriminator: Option<StringOrDiscriminator>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -137,10 +137,24 @@ pub enum SchemaType {
     Boolean,
     File,
     Integer,
+    Null,
     Number,
     Object,
     String,
 }
 impl Default for SchemaType {
     fn default() -> Self { Self::Object }
+}
+#[derive(Debug, Serialize, Deserialize, Clone, Ord, PartialOrd, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum SchemaTypeContainer {
+    SingleType(SchemaType),
+    MultiType(Vec<SchemaType>),
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[serde(untagged)]
+pub enum AdditionalSchemaProperties {
+    Reference(RefOr<Box<Schema>>),
+    Other(Value),
 }
