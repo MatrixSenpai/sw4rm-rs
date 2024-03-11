@@ -22,13 +22,12 @@ jobs:
         run: cargo check
       - name: Run tests
         run: cargo test --verbose --all --all-features
-# A problem is observed here when packages are out of sync. Need to figure out a way to force cargo to use local resolution in order to get this to work
-      # - name: Lint publish Cargo Generator
-      #   run: cargo publish --dry-run --color always --all-features --locked --package cargo-openapi
-      # - name: Lint publish Core
-      #   run: cargo publish --dry-run --color always --all-features --locked --package sw4rm-rs
-      # - name: Lint publish Generator
-      #   run: cargo publish --dry-run --color always --all-features --locked --package sw4rm-rs-generation
+      - name: Lint publish Cargo Generator
+        run: cargo publish --dry-run --color always --all-features --locked --package cargo-openapi
+      - name: Lint publish Core
+        run: cargo publish --dry-run --color always --all-features --locked --package sw4rm-rs
+      - name: Lint publish Generator
+        run: cargo publish --dry-run --color always --all-features --locked --package sw4rm-rs-generation
 
   # Need to figure this part out. bumping isn't currently working
   # bump:
