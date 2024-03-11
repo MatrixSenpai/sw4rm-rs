@@ -82,7 +82,7 @@ pub fn recursive_field_type(
     }
 
     // TODO: this whole block needs to be optimized
-    if schema.schema_type.eq(&Some(sw4rm_rs::shared::SchemaTypeContainer::SingleType(SchemaType::Object))) && (
+    if schema.schema_type.eq(&Some(SchemaType::Object)) && (
         schema.title.is_none() || schema.clone().title.is_some_and(|t| t.is_empty())
     ) {
         let mut string_arguments: Vec<PathSegment> = Vec::new();
@@ -131,14 +131,8 @@ pub fn recursive_field_type(
         );
     }
 
-    let additional = &schema.additional_properties.clone().map(|a| {
-        match a {
-            sw4rm_rs::shared::AdditionalSchemaProperties::Reference(r) => r,
-            _ => unreachable!(),
-        }
-    });
     let ident_type = get_type(
-        spec, field_title, field_type, &schema.items, additional
+        spec, field_title, field_type, &schema.items, &schema.additional_properties
     )?;
 
     let mut final_segment: Vec<PathSegment> = Vec::new();
@@ -173,36 +167,12 @@ fn get_type(
 
     if let Some(items) = properties {
         let items = items.resolve(spec)?;
-        let kind = items.schema_type.map(|s| {
-            match s {
-                sw4rm_rs::shared::SchemaTypeContainer::SingleType(v) => v,
-                sw4rm_rs::shared::SchemaTypeContainer::MultiType(v) => *v.first().unwrap(),
-            }
-        });
-        let additional = &items.additional_properties.map(|a| {
-            match a {
-                sw4rm_rs::shared::AdditionalSchemaProperties::Reference(r) => r,
-                _ => unreachable!(),
-            }
-        });
-        return get_type(spec, items.title, kind, &items.items, additional);
+        return get_type(spec, items.title, items.schema_type, &items.items, &items.additional_properties);
     }
 
     if let Some(additional_items) = additional_properties {
         let items = additional_items.resolve(spec)?;
-        let kind = items.schema_type.map(|s| {
-            match s {
-                sw4rm_rs::shared::SchemaTypeContainer::SingleType(v) => v,
-                sw4rm_rs::shared::SchemaTypeContainer::MultiType(v) => *v.first().unwrap(),
-            }
-        });
-        let additional = &items.additional_properties.map(|a| {
-            match a {
-                sw4rm_rs::shared::AdditionalSchemaProperties::Reference(r) => r,
-                _ => unreachable!(),
-            }
-        });
-        return get_type(spec, items.title, kind, &items.items, additional);
+        return get_type(spec, items.title, items.schema_type, &items.items, &items.additional_properties);
     }
 
     unreachable!()

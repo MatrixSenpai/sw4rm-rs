@@ -83,7 +83,6 @@ impl Resolvable for SecurityScheme {
 pub enum SecuritySchemeType {
     ApiKey,
     Http,
-    #[serde(rename = "oauth2")]
     OAuth2,
     OpenIdConnect,
 }
