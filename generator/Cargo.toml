@@ -16,7 +16,8 @@ rust-numerals = "0.1"
 convert_case = "0.6"
 lazy_static = "1"
 regex = "1"
-log = "0.4"
+log = { version = "0.4", features = ["kv"] }
+sanitizer = "0.1.6"
 
 
 [dev-dependencies]

@@ -1,4 +1,5 @@
-#![warn(missing_docs)]
+// TODO: reenable
+// #![warn(missing_docs)]
 #![deny(unsafe_code)]
 
 //! # SW4RM-RS Core
