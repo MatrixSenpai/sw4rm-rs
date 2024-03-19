@@ -1,0 +1,20 @@
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub struct PrivateApplicationResponse {
+    pub roleconnectionsverificationurl: !,
+    pub interactionsendpointurl: !,
+    pub icon: !,
+    pub botpublic: !,
+    pub privacypolicyurl: !,
+    pub botrequirecodegrant: !,
+    pub name: !,
+    pub coverimage: !,
+    pub maxparticipants: !,
+    pub custominstallurl: !,
+    pub slug: !,
+    pub flags: !,
+    pub verifykey: !,
+    pub id: !,
+    pub termsofserviceurl: !,
+    pub description: !,
+    pub approximateguildcount: !,
+}

@@ -3,21 +3,22 @@
 #[macro_use]
 extern crate log;
 
-// mod file;
-// mod constants;
-// mod error;
-// mod item;
-// mod attribute;
-// mod field;
-// mod ident;
-// mod typed;
-pub mod parsing;
+mod model;
+mod file;
+mod import;
+mod attribute;
+mod field;
+mod error;
+mod identifier;
+mod representable;
+mod utils;
 
-use std::{
-    collections::HashMap,
-    path::Path,
+use std::{collections::HashMap, path::Path, sync::Arc};
+use sw4rm_rs::{
+    *, shared::*, openapi_v2::*, openapi_v3_0::*,
 };
-use syn::File;
+
+pub use utils::*;
 
 use sw4rm_rs::Spec;
 // use file::{
@@ -27,8 +28,8 @@ use sw4rm_rs::Spec;
 // use error::GenerationError;
 
 pub enum ContainerItem {
-    File(String, File),
-    FileList(String, HashMap<String, File>),
+    File(String, syn::File),
+    FileList(String, HashMap<String, syn::File>),
 }
 
 pub struct GenerationOptions {

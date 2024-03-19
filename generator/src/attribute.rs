@@ -1,156 +1,166 @@
-use proc_macro2::{Ident, TokenStream};
-use quote::ToTokens;
-use syn::{
-    Attribute, AttrStyle, Expr, ExprLit, Lit, LitStr, MacroDelimiter, Meta, MetaList,
-    MetaNameValue, Path, PathArguments, PathSegment, Token,
-    __private::Span,
-    punctuated::Punctuated,
-    token::{
-        Bracket, Comma, Paren,
-    }
-};
+use proc_macro2::Span;
+use quote::quote;
+use syn::{punctuated::Punctuated, token::PathSep, PathSegment, Token};
 
-pub fn parse_struct_attrs(
-    description: Option<String>,
-) -> Vec<Attribute> {
-    let mut attrs = Vec::new();
+use super::{error::GenerationError, identifier::Identifier};
 
-    if let Some(description) = create_description_attr(&description) {
-        attrs.push(description);
-    }
 
-    let mut derive_segments = Punctuated::new();
-    derive_segments.push(PathSegment { ident: Ident::new("derive", Span::call_site()), arguments: PathArguments::None });
-    let derive_token_stream = quote::quote! {
-        Debug, Serialize, Deserialize, Default, Clone, PartialEq
-    };
-    let derive_meta = MetaList {
-        path: Path { leading_colon: None, segments: derive_segments },
-        delimiter: MacroDelimiter::Paren(Paren::default()),
-        tokens: derive_token_stream,
-    };
-    let derive_attr = Attribute {
-        pound_token: Token![#](Span::call_site()),
-        style: AttrStyle::Outer,
-        bracket_token: Bracket::default(),
-        meta: Meta::List(derive_meta),
-    };
-    attrs.push(derive_attr);
-
-    let mut default_segments = Punctuated::new();
-    default_segments.push(PathSegment { ident: Ident::new("default", Span::call_site()), arguments: PathArguments::None });
-    let default_meta = Path {
-        leading_colon: None,
-        segments: default_segments,
-    };
-
-    let mut rename_segments = Punctuated::new();
-    rename_segments.push(PathSegment { ident: Ident::new("rename_all", Span::call_site()), arguments: PathArguments::None });
-    let rename_expression = ExprLit {
-        attrs: Vec::default(),
-        lit: Lit::Str(LitStr::new("camelCase", Span::call_site()))
-    };
-    let rename_meta = MetaNameValue {
-        path: Path { leading_colon: None, segments: rename_segments },
-        eq_token: Token![=](Span::call_site()),
-        value: Expr::Lit(rename_expression)
-    };
-
-    let mut serde_attr_segments: Punctuated<TokenStream, Comma> = Punctuated::new();
-    serde_attr_segments.push(default_meta.to_token_stream());
-    serde_attr_segments.push(rename_meta.to_token_stream());
-
-    let mut serde_segments = Punctuated::new();
-    serde_segments.push(PathSegment { ident: Ident::new("serde", Span::call_site()), arguments: PathArguments::None });
-    let serde_meta = MetaList {
-        path: Path { leading_colon: None, segments: serde_segments },
-        delimiter: MacroDelimiter::Paren(Paren::default()),
-        tokens: serde_attr_segments.to_token_stream()
-    };
-    let serde_attr = Attribute {
-        pound_token: Token![#](Span::call_site()),
-        style: AttrStyle::Outer,
-        bracket_token: Bracket::default(),
-        meta: Meta::List(serde_meta),
-    };
-
-    attrs.push(serde_attr);
-
-    attrs
+/// An attribute to be applied. E.g. `#[derive(Debug)]`, `#[command]`
+#[derive(Debug, Clone)]
+pub enum Attribute {
+    /// A single attribute. E.g. `#[command]`
+    Single(Identifier),
+    /// A parenthesized attribute. E.g. `#[derive(Debug)]`
+    Paren(ParenAttribute),
 }
 
-pub fn parse_field_attrs(
-    description: &Option<String>,
-    field_name: &String,
-    needs_rename: bool,
-) -> Vec<Attribute> {
-    let mut attrs = Vec::new();
+impl Attribute {
+    pub fn default_struct_derive_attrs(additional_addrs: Option<Vec<Self>>) -> Vec<Self> {
+        let mut attrs = additional_addrs.unwrap_or_default();
+        let attr_item = vec![
+            "Debug",
+            "Serialize",
+            "Deserialize",
+            "Clone",
+            "PartialEq",
+        ].into_iter()
+            .map(String::from)
+            .map(Identifier::new)
+            .map(ParenAttributeItem::Single)
+            .collect();
 
-    if let Some(description) = create_description_attr(description) {
-        attrs.push(description);
+        attrs.push(
+            Attribute::Paren(
+                ParenAttribute { name: Identifier::new("derive".to_string()), items: attr_item }
+            )
+        );
+
+        attrs
     }
 
-    if needs_rename {
-        let mut rename_segments = Punctuated::new();
-        rename_segments.push(PathSegment { ident: Ident::new("rename", Span::call_site()), arguments: PathArguments::None });
-        let rename_expression = ExprLit {
-            attrs: Vec::default(),
-            lit: Lit::Str(LitStr::new(field_name, Span::call_site()))
-        };
-        let rename_meta = MetaNameValue {
-            path: Path { leading_colon: None, segments: rename_segments },
-            eq_token: Token![=](Span::call_site()),
-            value: Expr::Lit(rename_expression)
-        };
-        let mut serde_segments = Punctuated::new();
-        serde_segments.push(PathSegment { ident: Ident::new("serde", Span::call_site()), arguments: PathArguments::None });
-        let serde_meta = MetaList {
-            path: Path { leading_colon: None, segments: serde_segments },
-            delimiter: MacroDelimiter::Paren(Paren::default()),
-            tokens: rename_meta.to_token_stream()
-        };
-        let serde_attr = Attribute {
-            pound_token: Token![#](Span::call_site()),
-            style: AttrStyle::Outer,
-            bracket_token: Bracket::default(),
-            meta: Meta::List(serde_meta),
-        };
-        attrs.push(serde_attr);
-    }
+    pub fn default_optional_derive_attrs(additional_addrs: Option<Vec<Self>>) -> Vec<Self> {
+        let mut attrs = additional_addrs.unwrap_or_default();
+        let attr_item = vec![
+            "Debug",
+            "Serialize",
+            "Deserialize",
+            "Copy",
+            "Clone",
+            "PartialEq",
+            "Eq",
+            "PartialOrd",
+            "Ord",
+        ].into_iter()
+            .map(String::from)
+            .map(Identifier::new)
+            .map(ParenAttributeItem::Single)
+            .collect();
 
-    attrs
+        attrs.push(
+            Attribute::Paren(
+                ParenAttribute { name: Identifier::new("derive".to_string()), items: attr_item }
+            )
+        );
+
+        attrs
+    }
 }
 
-fn create_description_attr(
-    description: &Option<String>,
-) -> Option<Attribute> {
-    let description = description.clone()?;
-    let description = format!(" {}", description);
+impl From<Attribute> for syn::Attribute {
+    fn from(val: Attribute) -> Self {
+        let item = match val {
+            Attribute::Paren(attribute) => attribute.into(),
+            Attribute::Single(identifier) => {
+                let mut segments: Punctuated<PathSegment, PathSep> = Punctuated::new();
 
-    let mut comment_segments = Punctuated::new();
-    comment_segments.push(PathSegment {
-        ident: Ident::new("doc", Span::call_site()),
-        arguments: PathArguments::None
-    });
+                let attr_ident = identifier.field_rep(false).0;
+                segments.push(syn::PathSegment {
+                    ident: syn::Ident::new(attr_ident.as_str(), Span::call_site()),
+                    arguments: syn::PathArguments::None,
+                });
 
-    let comment_expression = ExprLit {
-        attrs: Vec::default(),
-        lit: Lit::Str(LitStr::new(
-            description.as_str(), Span::call_site()
-        ))
-    };
+                syn::Meta::Path(
+                    syn::Path { leading_colon: None, segments }
+                )
+            },
+        };
 
-    let comment_meta = MetaNameValue {
-        path: Path { leading_colon: None, segments: comment_segments },
-        eq_token: Token![=](Span::call_site()),
-        value: Expr::Lit(comment_expression),
-    };
-    Some(
-        Attribute {
+        syn::Attribute {
             pound_token: Token![#](Span::call_site()),
-            style: AttrStyle::Outer,
-            bracket_token: Bracket::default(),
-            meta: Meta::NameValue(comment_meta)
+            style: syn::AttrStyle::Outer,
+            bracket_token: syn::token::Bracket::default(),
+            meta: item,
         }
-    )
+    }
+}
+
+/// A parenthesized attribute. E.g. `#[derive(Debug)]`
+#[derive(Debug, Clone)]
+pub struct ParenAttribute {
+    /// The name outside parenthesis. The `derive` in `#[derive(Debug)]`
+    pub name: Identifier,
+    /// The items inside the parenthesis. The `Debug` in `#[derive(Debug)]`
+    pub items: Vec<ParenAttributeItem>,
+}
+
+/// A parenthesized attribute. E.g. `Debug`, `rename_all = "foo"`
+#[derive(Debug, Clone, PartialEq)]
+pub enum ParenAttributeItem {
+    /// A single item. E.g. `Debug`
+    Single(Identifier),
+    /// An assigned value. E.g. `rename_all = "foo"`
+    AssignValue(Identifier, Identifier),
+    /// A nested item. E.g. `serde(rename(serialize = "ser_name"))
+    Nested(Identifier, Box<ParenAttributeItem>)
+}
+
+impl From<ParenAttribute> for syn::Meta {
+    fn from(val: ParenAttribute) -> Self {
+        let attr_ident = val.name.field_rep(false).0;
+        let mut attr_segments: syn::punctuated::Punctuated<syn::PathSegment, PathSep> = syn::punctuated::Punctuated::new();
+        attr_segments.push(syn::PathSegment {
+            ident: syn::Ident::new(attr_ident.as_str(), Span::call_site()),
+            arguments: syn::PathArguments::None,
+        });
+        let attr_path = syn::Path { leading_colon: None, segments: attr_segments };
+
+        let token_list = val.items.iter()
+            .map(|item| {
+                fn handle_item(item: &ParenAttributeItem) -> proc_macro2::TokenStream {
+                    match item {
+                        ParenAttributeItem::Single(ident) => {
+                            let ident_name = ident.clone().trait_rep(false).0;
+                            let ident = syn::Ident::new(ident_name.as_str(), Span::call_site());
+                            quote! { #ident }
+                        },
+                        ParenAttributeItem::AssignValue(left, right) => {
+                            let left_ident_name = left.clone().trait_rep(false).0;
+                            let left_ident = syn::Ident::new(left_ident_name.as_str(), Span::call_site());
+
+                            let right = right.raw_value();
+
+                            quote! { #left_ident = "#right" }
+                        },
+                        ParenAttributeItem::Nested(ident, inner) => {
+                            let ident_name = ident.clone().trait_rep(false).0;
+                            let ident = syn::Ident::new(ident_name.as_str(), Span::call_site());
+
+                            let inner = handle_item(inner);
+
+                            quote! { #ident(#inner) }
+                        },
+                    }
+                };
+                handle_item(item)
+            })
+            .collect::<Vec<_>>();
+
+        syn::Meta::List(syn::MetaList {
+            path: attr_path,
+            delimiter: syn::MacroDelimiter::Paren(syn::token::Paren::default()),
+            tokens: quote! {
+               #(#token_list), *
+            }
+        })
+    }
 }

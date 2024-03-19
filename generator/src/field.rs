@@ -1,75 +1,114 @@
-use syn::{
-    Field, FieldMutability, Path, Token, Type, TypePath, Visibility,
-    __private::Span,
-    punctuated::Punctuated,
-    token::Comma,
-};
-
-use super::{
-    GenerationError,
-    ident::parse_field_ident,
-    attribute::parse_field_attrs,
-    typed::recursive_field_type,
-};
+use std::sync::Arc;
+use std::collections::HashMap;
+use proc_macro2::Span;
 use sw4rm_rs::{
-    Spec,
-    shared::{Schema, SchemaType}
+    shared::{Schema, SchemaType, SchemaTypeContainer}, Spec
+};
+use syn::Token;
+use super::{
+    attribute::Attribute, error::GenerationError, identifier::Identifier, import::Import
 };
 
-/// Returns a set of fields inside a struct. Includes rename attributes and doc comments, if
-/// available. Also attempts to find any invalid identifiers and rename them
-pub fn parse_struct_fields(
-    spec: &Spec,
-    schema: &Schema,
-) -> Result<Punctuated<Field, Comma>, GenerationError> {
-    Ok(
-        schema.properties.iter()
-            .map(|(object_name, object_reference)| (object_name, object_reference.resolve(spec).unwrap()))
-            .map(|(object_name, schema)| parse_struct_field(spec, object_name, schema).unwrap())
-            .collect::<Punctuated<_, Comma>>()
-    )
+/// A field in a struct or enum
+#[derive(Debug, Clone)]
+pub struct Field {
+    /// If the type needs to be exported, it is easier to define it here than trying to pass it all
+    /// the way up. Should be collected by `Model`
+    pub imports: Vec<Import>,
+    /// A documentation attribute
+    pub documentation: Option<String>,
+    /// Any attributes for the field. E.g. `serde(skip_serializing)`
+    pub attributes: Vec<Attribute>,
+    /// The field name. Should be `Ident` ready
+    pub field_name: Identifier,
+    /// The field type
+    pub field_type: FieldType,
 }
 
-/// Returns a single struct field. Includes doc and rename, if required.
-fn parse_struct_field(
-    spec: &Spec,
-    property_name: &String,
-    schema: Box<Schema>,
-) -> Result<Field, GenerationError> {
-    let binding = schema.clone();
-    let schema_ref = binding.as_ref();
+#[derive(Debug, Clone)]
+pub struct FieldInputParams {
+    pub definition_key: String,
+    pub field: Box<Schema>,
+    pub spec: Arc<Spec>,
+}
 
-    let (ident, needs_rename) = parse_field_ident(property_name);
-    let attrs = parse_field_attrs(&schema.description, property_name, needs_rename);
+impl TryFrom<FieldInputParams> for Field {
+    type Error = GenerationError;
 
-    let required_fields = schema.required.clone();
+    fn try_from(value: FieldInputParams) -> Result<Self, Self::Error> {
+        let field_name = value.field.title.clone()
+            .unwrap_or(value.definition_key.clone());
 
-    let path_segments = recursive_field_type(
-        spec,
-        schema_ref,
-        !required_fields.contains(&property_name),
-        schema.schema_type.eq(&Some(sw4rm_rs::shared::SchemaTypeContainer::SingleType(SchemaType::Array))),
-        schema.title,
-        schema.schema_type.map(|s| {
-            match s {
-                sw4rm_rs::shared::SchemaTypeContainer::SingleType(v) => v,
-                sw4rm_rs::shared::SchemaTypeContainer::MultiType(v) => v.first().unwrap().clone(),
+        Ok(
+            Self {
+                // TODO: do imports
+                imports: Vec::new(),
+                documentation: value.field.description.clone(),
+                // TODO: do attributes
+                attributes: Vec::new(),
+                field_name: field_name.into(),
+                field_type: value.clone().try_into()?,
             }
-        })
-    )?;
-    let path = TypePath {
-        qself: None,
-        path: Path { leading_colon: None, segments: path_segments }
-    };
+        )
+    }
+}
 
-    Ok(
-        Field {
-            attrs,
-            ident: Some(ident),
-            vis: Visibility::Public(Token![pub](Span::call_site())),
-            mutability: FieldMutability::None,
-            colon_token: None,
-            ty: Type::Path(path),
+impl From<Field> for syn::Field {
+    fn from(val: Field) -> Self {
+       let (ident, needs_rename) = val.field_name.field_rep(true); 
+
+        syn::Field {
+            attrs: Vec::new(),
+            vis: syn::Visibility::Public(Token![pub](Span::call_site())),
+            mutability: syn::FieldMutability::None,
+            ident: Some(syn::Ident::new(ident.as_str(), Span::call_site())),
+            colon_token: Some(Token![:](Span::call_site())),
+            ty: syn::Type::Never(syn::TypeNever { bang_token: Token![!](Span::call_site()) }),
         }
-    )
+    }
+}
+
+/// Either a concrete or generic type
+#[derive(Debug, Clone)]
+pub enum FieldType {
+    /// A concrete type. E.g. `String`, `impl DeserializeOwned`
+    Concrete(FieldConcreteType),
+    /// A generic field type. E.g. `Option<String>`
+    Generic(FieldConcreteType, Box<FieldType>),
+    /// A generic field type that specifies a key and value. E.g. `HashMap<String, String>`
+    GenericPair(FieldConcreteType, Box<FieldType>, Box<FieldType>)
+}
+
+#[derive(Debug, Clone)]
+pub enum FieldConcreteType {
+    Array,
+    Map,
+    Optional,
+    Bool,
+    Integer,
+    Float,
+    String,
+}
+
+impl TryFrom<FieldInputParams> for FieldType {
+    type Error = GenerationError;
+
+    fn try_from(value: FieldInputParams) -> Result<Self, Self::Error> {
+        let kind = match value.field.schema_type {
+            Some(SchemaTypeContainer::SingleType(v)) => v,
+            Some(SchemaTypeContainer::MultiType(v)) => v.first().unwrap().to_owned(),
+            _ => return Err(GenerationError::MissingType)
+        };
+
+        let kind = match kind {
+            SchemaType::Boolean => FieldConcreteType::Bool,
+            SchemaType::String => FieldConcreteType::String,
+            SchemaType::Integer => FieldConcreteType::Integer,
+            SchemaType::Number => FieldConcreteType::Float,
+
+            _ => return Err(Self::Error::Incomplete),
+        };
+        
+        Ok(FieldType::Concrete(kind))
+    }
 }

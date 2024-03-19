@@ -1,0 +1,21 @@
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub struct DestinyDefinitionsDestinyObjectiveDefinition {
+    pub progress_description: !,
+    pub show_value_on_complete: !,
+    pub in_progress_value_style: !,
+    pub allow_overcompletion: !,
+    pub allow_negative_value: !,
+    pub ui_label: !,
+    pub completion_value: !,
+    pub index: !,
+    pub hash: !,
+    pub minimum_visibility_threshold: !,
+    pub is_counting_downward: !,
+    pub value_style: !,
+    pub redacted: !,
+    pub ui_style: !,
+    pub location_hash: !,
+    pub completed_value_style: !,
+    pub scope: !,
+    pub allow_value_change_when_completed: !,
+}

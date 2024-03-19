@@ -10,26 +10,10 @@ fn initialize() {
 
 #[test]
 fn test_spec_parsing() {
-    let openapi_spec = sw4rm_rs::from_path("../resources/openapi_3_0.yaml").unwrap();
-    let openapi_object_count = &openapi_spec.schemas().len();
-    let openapi_parsed = sw4rm_rs_generation::parsing::transform_spec(openapi_spec, None);
-    
-    let riot_spec = sw4rm_rs::from_path("../resources/riot-swaggerspec-2.0.json").unwrap();
-    let riot_object_count = &riot_spec.schemas().len();
-    let riot_parsed = sw4rm_rs_generation::parsing::transform_spec(riot_spec, None);
-
-    let bungie_spec = sw4rm_rs::from_path("../resources/bungie-spec.json").unwrap();
-    let bungie_object_count = &bungie_spec.schemas().len();
-    let bungie_parsed = sw4rm_rs_generation::parsing::transform_spec(bungie_spec, None);
-
-    let discord_spec = sw4rm_rs::from_path("../resources/discord-spec.json").unwrap();
-    let discord_object_count = &discord_spec.schemas().len();
-    let discord_parsed = sw4rm_rs_generation::parsing::transform_spec(discord_spec, None);
-
-    info!("OpenAPI spec: {}/{openapi_object_count} parsed", openapi_parsed.len());
-    info!("Riot spec: {}/{riot_object_count} parsed", riot_parsed.len());
-    info!("Bungie spec: {}/{bungie_object_count} parsed", bungie_parsed.len());
-    info!("Discord spec: {}/{discord_object_count} parsed", discord_parsed.len());
+    test_spec("openapi_3_0.yaml", "openapi");
+    test_spec("riot-swaggerspec-2.0.json", "riot");
+    test_spec("bungie-spec.json", "bungie");
+    test_spec("discord-spec.json", "discord");
 }
 //
 // #[test]
@@ -51,3 +35,25 @@ fn test_spec_parsing() {
 // fn read_openapi_v3_json() {
 //     _ = parse_file("../resources/riot-openapi-3.0.0.json").unwrap();
 // }
+
+fn test_spec<T: Into<String> + std::fmt::Display>(read_file: T, write_dir: T) {
+    let spec = sw4rm_rs::from_path(format!("../resources/{read_file}")).unwrap();
+    let object_count = &spec.schemas().len();
+    let spec_name = spec.info.title.clone();
+    let parsed = sw4rm_rs_generation::transform_spec(spec, None);
+    let parsed_count = &parsed.len();
+    let transformed = sw4rm_rs_generation::transform_files(parsed, None);
+
+    std::fs::create_dir(format!("../resources/{write_dir}")).ok();
+
+    for (name, file) in transformed.into_iter() {
+        let contents = prettyplease::unparse(&file);
+
+        std::fs::write(
+            format!("../resources/{write_dir}/{name}.rs"),
+            contents
+        ).unwrap();
+    }
+
+    info!("{spec_name} spec: {parsed_count}/{object_count} parsed & written")
+}

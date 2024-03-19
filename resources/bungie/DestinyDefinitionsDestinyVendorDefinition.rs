@@ -1,0 +1,23 @@
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub struct DestinyDefinitionsDestinyVendorDefinition {
+    pub vendor_portrait: !,
+    pub vendor_identifier: !,
+    pub reset_offset_minutes: !,
+    pub sell_string: !,
+    pub faction_hash: !,
+    pub visible: !,
+    pub vendor_subcategory_identifier: !,
+    pub consolidate_categories: !,
+    pub inhibit_buying: !,
+    pub index: !,
+    pub vendor_banner: !,
+    pub redacted: !,
+    pub reset_interval_minutes: !,
+    pub vendor_progression_type: !,
+    pub buy_string: !,
+    pub inhibit_selling: !,
+    pub display_item_hash: !,
+    pub enabled: !,
+    pub hash: !,
+    pub return_with_vendor_request: !,
+}
