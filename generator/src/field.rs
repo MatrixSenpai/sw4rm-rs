@@ -63,7 +63,7 @@ impl From<Field> for syn::Field {
             mutability: syn::FieldMutability::None,
             ident: Some(syn::Ident::new(ident.as_str(), Span::call_site())),
             colon_token: Some(Token![:](Span::call_site())),
-            ty: syn::Type::Never(syn::TypeNever { bang_token: Token![!](Span::call_site()) }),
+            ty: val.field_type.into(),
         }
     }
 }
@@ -77,6 +77,50 @@ pub enum FieldType {
     Generic(FieldConcreteType, Box<FieldType>),
     /// A generic field type that specifies a key and value. E.g. `HashMap<String, String>`
     GenericPair(FieldConcreteType, Box<FieldType>, Box<FieldType>)
+}
+
+impl From<FieldType> for syn::Type {
+    fn from(value: FieldType) -> Self {
+        let mut segments: syn::punctuated::Punctuated<syn::PathSegment, _> = syn::punctuated::Punctuated::new();
+        let segment = match value.clone() {
+            FieldType::Concrete(t) => syn::PathSegment { ident: t.into(), arguments: syn::PathArguments::None },
+            FieldType::Generic(t, _) => syn::PathSegment { ident: t.into(), arguments: value.into() },
+            FieldType::GenericPair(t, _, _) => syn::PathSegment { ident: t.into(), arguments: value.into() },
+        };
+        segments.push(segment);
+        
+        syn::Type::Path(syn::TypePath {
+            qself: None,
+            path: syn::Path { leading_colon: None, segments },
+        })
+    }
+}
+
+impl From<FieldType> for syn::PathArguments {
+    fn from(value: FieldType) -> Self {
+        let mut generics: syn::punctuated::Punctuated<syn::GenericArgument, _> = syn::punctuated::Punctuated::new();
+        match value {
+            FieldType::Generic(_, i) => {
+                let item_type = (*i).into();
+                generics.push(syn::GenericArgument::Type(item_type));
+            },
+            FieldType::GenericPair(_, l, r) => {
+                let left_type = (*l).into();
+                generics.push(syn::GenericArgument::Type(left_type));
+
+                let right_type = (*r).into();
+                generics.push(syn::GenericArgument::Type(right_type));
+            }
+            _ => unreachable!(),
+        };
+
+        syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+            colon2_token: None,
+            lt_token: Token![<](Span::call_site()),
+            gt_token: Token![>](Span::call_site()),
+            args: generics,
+        })
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -110,5 +154,22 @@ impl TryFrom<FieldInputParams> for FieldType {
         };
         
         Ok(FieldType::Concrete(kind))
+    }
+}
+
+impl From<FieldConcreteType> for syn::Ident {
+    fn from(value: FieldConcreteType) -> Self {
+        match value {
+            FieldConcreteType::Array => syn::Ident::new("Vec", Span::call_site()),
+            // TODO: report this as needing import...
+            FieldConcreteType::Map => syn::Ident::new("HashMap", Span::call_site()),
+            FieldConcreteType::Optional => syn::Ident::new("Option", Span::call_site()),
+            FieldConcreteType::Bool => syn::Ident::new("bool", Span::call_site()),
+            // TODO: this should be optimized...
+            FieldConcreteType::Integer => syn::Ident::new("i64", Span::call_site()),
+            // TODO: this should be optimized...
+            FieldConcreteType::Float => syn::Ident::new("f64", Span::call_site()),
+            FieldConcreteType::String => syn::Ident::new("String", Span::call_site()),
+        }
     }
 }
